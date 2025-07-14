@@ -1,41 +1,62 @@
-# Unity generated files
+# Unity .gitignore
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
 [Ll]ogs/
+[Mm]emoryCaptures/
 UserSettings/
-MemoryCaptures/
-.sysinfo/
-*.booproj
-*.pidb
-*.suo
-*.user
-*.userprefs
 *.csproj
 *.unityproj
 *.sln
+*.suo
 *.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
 *.svd
 *.pdb
 *.mdb
 *.opendb
 *.VC.db
+sysinfo.txt
 *.pidb.meta
 
-# OS generated files
+# OS generated
 .DS_Store
 Thumbs.db
 
-# Crashlytics
-crashlytics-build.properties
+# Visual Studio Code
+.vscode/
 
 # Git LFS
 *.psd
 *.png
+*.jpg
+*.jpeg
 *.fbx
-*.mp4
-*.mp3
 *.wav
+*.mp3
+*.ogg
+*.mp4
+*.avi
+*.mov
 *.zip
+*.rar
+*.7z
+*.unity
+*.prefab
+*.mat
+
+# Builds
+*.apk
+*.aab
+*.exe
+*.app
+*.x86_64
+*.ipa
+
+# Unity Collaborate
+.collab/
