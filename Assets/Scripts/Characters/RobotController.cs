@@ -96,10 +96,12 @@ public class RobotController : MonoBehaviour
 
     void CheckGrounded()
     {
-        Vector3 origin = transform.position + Vector3.up * 0.1f;
-        isGrounded = Physics.Raycast(origin, Vector3.down, groundCheckDistance + 0.1f, groundLayer);
+        // Cast ray from the bottom of the capsule
+        Vector3 checkPos = transform.position + Vector3.down * 0.5f;
+        float checkRadius = 0.25f;
 
-        Debug.DrawRay(origin, Vector3.down * (groundCheckDistance + 0.1f), isGrounded ? Color.green : Color.red);
+        isGrounded = Physics.CheckSphere(checkPos, checkRadius, groundLayer);
+        Debug.DrawRay(checkPos, Vector3.up * 0.5f, isGrounded ? Color.green : Color.red);
     }
 
     void OnCollisionStay(Collision collision)
