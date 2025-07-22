@@ -4,9 +4,8 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Box
-  - Destination
   - EnergyBattery
+  - EnergyCube
   layers:
   - Default
   - TransparentFX

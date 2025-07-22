@@ -2,7 +2,7 @@
     "name": "PlayerInputActions",
     "maps": [
         {
-            "name": "Player",
+            "name": "Gameplay",
             "id": "108e4230-640e-40c6-904d-8bd5418a4480",
             "actions": [
                 {
@@ -15,24 +15,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Restart",
-                    "type": "Button",
-                    "id": "9ef9a756-291c-46ac-916e-148f9d6374d1",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "NextLevel",
-                    "type": "Button",
-                    "id": "0c35bd6d-2c17-47dd-8efc-d1fbe92a5280",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Jump",
                     "type": "Button",
                     "id": "f7b05e9c-2ce6-4565-a2d7-2c0b17df1afa",
@@ -42,9 +24,36 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Sprint",
+                    "name": "Look",
+                    "type": "Value",
+                    "id": "ab494112-26e9-4381-88ed-7070043f717f",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Walk",
                     "type": "Button",
-                    "id": "fba31599-ff35-467b-b94f-307ea6e4dda5",
+                    "id": "95db473d-7377-4c28-95a5-eaa766dc775c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Push",
+                    "type": "Button",
+                    "id": "bfa2c123-87b1-4a8b-9660-d9cf13d7612d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Interact",
+                    "type": "Button",
+                    "id": "d65f4ce9-e164-45c6-bc40-fd216b0ff357",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -109,28 +118,6 @@
                 },
                 {
                     "name": "",
-                    "id": "f1b59940-df43-4a6b-8c53-76d981fca394",
-                    "path": "<Keyboard>/r",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Restart",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "8fca475a-def3-4c5c-908f-2f698b09c1a7",
-                    "path": "<Keyboard>/n",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "NextLevel",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "14369e11-7bfa-46ce-ad17-e1a0f98dd161",
                     "path": "<Keyboard>/space",
                     "interactions": "",
@@ -142,12 +129,45 @@
                 },
                 {
                     "name": "",
-                    "id": "210bb758-dce6-4fda-8e60-1d8149899478",
+                    "id": "62f0b18f-e333-40ac-822b-f863ec42e1fd",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Look",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4fb8e426-eabc-4a86-b6c7-625a93ce0bb0",
                     "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Sprint",
+                    "action": "Walk",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "fb84e4aa-7fad-409f-a6aa-a74e8269412f",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Push",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e66c5563-60da-47a2-8ebf-da736faa0cff",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
