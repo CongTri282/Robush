@@ -9,7 +9,7 @@ public class EnergyBatteryController : MonoBehaviour
         PlayerController player = other.GetComponent<PlayerController>();
         if (player != null)
         {
-            SFXManager.Instance.PlaySFX(SoundType.EnergyPickup);
+            SFXManager.Instance?.PlaySFX(SoundType.EnergyPickup);
             player.AddEnergy(energyAmount);
             Destroy(gameObject);
         }
