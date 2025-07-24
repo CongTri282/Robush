@@ -1,45 +1,104 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using System.Collections;
+using System.Threading;
+using Unity.VisualScripting;
 
 public class SwitchLevelController : MonoBehaviour
 {
     [Header("References")]
+    [SerializeField] private string nextLevelName;
+    [SerializeField] private float interactionDistance = 2f;
     [SerializeField] private GameObject elevator;
-    [SerializeField] private string closeElevatorAnim = "CloseElevator";
-    [SerializeField] private CanvasGroup fadeCanvas;
-    [SerializeField] private float fadeDuration = 1.5f;
-    [SerializeField] private string nextSceneName = "NextLevel";
+    [SerializeField] private GameObject infoUI;
+    [SerializeField] private InputActionAsset inputActionsAsset;
 
-    private bool isSwitching = false;
+    private InputAction interactAction;
+    private bool isPlayerNearby = false;
+    private PlayerController player;
+    private bool allowSwitch = false;
 
-    public void TriggerSwitch()
+    private float switchCooldown = 4f; // seconds
+    private float cooldownTimer = 0f;
+
+    void Start()
     {
-        if (isSwitching) return;
-        isSwitching = true;
-        // Close elevator
-        if (elevator != null)
+        if (inputActionsAsset != null)
         {
-            var anim = elevator.GetComponent<Animator>();
-            if (anim != null)
-                anim.Play(closeElevatorAnim);
+            var gameplayMap = inputActionsAsset.FindActionMap("Gameplay", true);
+            interactAction = gameplayMap.FindAction("Interact", true);
+            interactAction.Disable(); // Disable until cooldown is over
         }
-        // Start fade and switch
-        StartCoroutine(FadeAndSwitch());
+
+        cooldownTimer = switchCooldown;
+        allowSwitch = false;
     }
 
-    private System.Collections.IEnumerator FadeAndSwitch()
+
+    void Update()
     {
-        if (fadeCanvas != null)
+        // Handle cooldown
+        if (!allowSwitch)
         {
-            float t = 0f;
-            while (t < fadeDuration)
+            cooldownTimer -= Time.deltaTime;
+            if (cooldownTimer <= 0f)
             {
-                t += Time.deltaTime;
-                fadeCanvas.alpha = Mathf.Lerp(0f, 1f, t / fadeDuration);
-                yield return null;
+                allowSwitch = true;
+                interactAction?.Enable();
             }
-            fadeCanvas.alpha = 1f;
         }
-        // Switch to next scene
-        UnityEngine.SceneManagement.SceneManager.LoadScene(nextSceneName);
+
+        // Player lookup
+        if (player == null)
+        {
+            GameObject playerObj = GameObject.FindWithTag("Player");
+            if (playerObj) player = playerObj.GetComponent<PlayerController>();
+        }
+
+        if (player == null || interactAction == null || !allowSwitch) return;
+
+        float dist = Vector3.Distance(transform.position, player.transform.position);
+        isPlayerNearby = dist < interactionDistance;
+
+        if (infoUI)
+        {
+            infoUI.GetComponent<TMPro.TMP_Text>().text = isPlayerNearby ? "Press E to interact" : "";
+            infoUI.SetActive(isPlayerNearby);
+        }
+
+        if (isPlayerNearby && interactAction != null && interactAction.triggered)
+        {
+            SFXManager.Instance?.PlaySFX(SoundType.Switch);
+            cooldownTimer = switchCooldown;
+            allowSwitch = false;
+            interactAction.Disable();
+            if (infoUI) infoUI.SetActive(false);
+            StartCoroutine(SwitchLevel());
+        }
+    }
+
+    private IEnumerator SwitchLevel()
+    {
+        // Close elevator animation
+        if (elevator != null)
+        {
+            SFXManager.Instance?.PlaySFX(SoundType.ElevatorOpen);
+            yield return new WaitForSeconds(2f); // Wait for sound to play
+            var anim = elevator.GetComponent<Animator>();
+            if (anim != null)
+                anim.Play("CloseElevator");
+        }
+        // Wait for elevator animation to finish
+        yield return new WaitForSeconds(2f);
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.LoadLevel(nextLevelName, 1);
+        }
+        else
+        {
+            // Fallback: load scene directly if GameManager is missing
+            UnityEngine.SceneManagement.SceneManager.LoadScene(nextLevelName);
+        }
     }
 }
