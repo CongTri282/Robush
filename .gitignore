@@ -44,6 +44,8 @@ mono_crash.*
 *.tmp
 *.user
 *.userprefs
+#Visual Studio Code
+.vscode/
 
 # Consulo
 .consulo/
