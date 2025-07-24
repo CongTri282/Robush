@@ -23,6 +23,22 @@ public class PlayerController : MonoBehaviour
     private InputAction walkAction;
 
     private EnergyCubeController attachedCube;
+    private float pushAttachCooldown = 0.2f; // seconds
+    private float pushAttachTimer = 0f;
+
+    // Energy variables
+    [SerializeField] float maxEnergy = 1f;
+    [SerializeField] float currentEnergy = 1f;
+    [SerializeField] float energyDrainPerSecond = 0.2f;
+    [SerializeField] EnergyBarUI energyBarUI;
+
+    // Looping SFX
+    [Header("Looping SFX")]
+    [SerializeField] private AudioSource footstepSource;
+    [SerializeField] private AudioSource pushSource;
+
+    private bool isFootstepLooping = false;
+    private bool isPushLooping = false;
 
     void Start()
     {
@@ -40,45 +56,94 @@ public class PlayerController : MonoBehaviour
         }
 
         controller.minMoveDistance = 0.001f;
-        
+
+        // Setup looping SFX sources if not assigned
+        if (!footstepSource)
+        {
+            footstepSource = gameObject.AddComponent<AudioSource>();
+            footstepSource.loop = true;
+            footstepSource.playOnAwake = false;
+        }
+        if (!pushSource)
+        {
+            pushSource = gameObject.AddComponent<AudioSource>();
+            pushSource.loop = true;
+            pushSource.playOnAwake = false;
+        }
     }
 
     void Update()
     {
         isGrounded = controller.isGrounded;
+        if (pushAttachTimer > 0f)
+            pushAttachTimer -= Time.deltaTime;
 
         if (isGrounded && playerVelocity.y < 0)
         {
             playerVelocity.y = 0f;
+            if (isJumping)
+            {
+                SFXManager.Instance?.PlaySFX(SoundType.Landing);
+            }
             isJumping = false;
         }
 
         // Handle push interaction
         if (isPushingCube)
         {
-            // Detach if F pressed again
-            if (pushAction != null && pushAction.triggered)
+            // Stop footstep loop if entering push mode
+            StopFootstepLoop();
+
+            // Detach if F pressed again, but only if cooldown has elapsed
+            if (pushAction != null && pushAction.triggered && pushAttachTimer <= 0f)
             {
                 isPushingCube = false;
                 if (attachedCube != null) attachedCube.Detach();
                 attachedCube = null;
                 activeChar.GetComponent<Animator>().Play("Idle");
+                StopPushLoop();
                 return;
             }
 
-            // Only allow pushing forward (player's facing direction)
-            Vector2 pushMoveInput = moveAction != null ? moveAction.ReadValue<Vector2>() : Vector2.zero;
-            float pushAmount = pushMoveInput.y; // Only forward input
-            if (pushAmount > 0f)
+            // Only allow pushing if energy > 0
+            if (currentEnergy > 0f)
             {
-                Vector3 pushDir = transform.forward * pushAmount;
-                activeChar.GetComponent<Animator>().Play("Pushing");
-                attachedCube.Push(pushDir.normalized, pushingSpeed);
-                controller.Move(pushDir.normalized * pushingSpeed * Time.deltaTime);
+                Vector2 pushMoveInput = moveAction != null ? moveAction.ReadValue<Vector2>() : Vector2.zero;
+                float pushAmount = pushMoveInput.y; // Only forward input
+                if (pushAmount > 0f)
+                {
+                    Vector3 pushDir = transform.forward * pushAmount;
+                    activeChar.GetComponent<Animator>().Play("Pushing");
+                    attachedCube.Push(pushDir.normalized, pushingSpeed);
+                    controller.Move(pushDir.normalized * pushingSpeed * Time.deltaTime);
+                    StartPushLoop();
+
+                    // Drain energy while pushing
+                    currentEnergy = Mathf.Max(0f, currentEnergy - energyDrainPerSecond * Time.deltaTime);
+                    if (energyBarUI) energyBarUI.SetEnergy(currentEnergy / maxEnergy);
+
+                    // If energy runs out, stop pushing
+                    if (currentEnergy <= 0f)
+                    {
+                        isPushingCube = false;
+                        if (attachedCube != null) attachedCube.Detach();
+                        attachedCube = null;
+                        activeChar.GetComponent<Animator>().Play("Idle");
+                        StopPushLoop();
+                        return;
+                    }
+                }
+                else
+                {
+                    activeChar.GetComponent<Animator>().Play("Push_Pose");
+                    StopPushLoop();
+                }
             }
             else
             {
+                // No energy, can't push
                 activeChar.GetComponent<Animator>().Play("Push_Pose");
+                StopPushLoop();
             }
 
             return;
@@ -128,9 +193,13 @@ public class PlayerController : MonoBehaviour
         {
             if (!isJumping)
             {
-                activeChar.GetComponent<Animator>().Play(
-                    (walkAction != null && walkAction.ReadValue<float>() > 0.5f) ? "Walking" : "Running"
-                );
+                bool isWalking = (walkAction != null && walkAction.ReadValue<float>() > 0.5f);
+                activeChar.GetComponent<Animator>().Play(isWalking ? "Walking" : "Running");
+                StartFootstepLoop(isWalking, isPushingCube);
+            }
+            else
+            {
+                StopFootstepLoop(); // Stop footsteps while jumping
             }
         }
         else
@@ -138,6 +207,65 @@ public class PlayerController : MonoBehaviour
             if (!isJumping)
             {
                 activeChar.GetComponent<Animator>().Play("Idle");
+            }
+            StopFootstepLoop();
+        }
+
+        // --- Looping SFX helpers ---
+        void StartFootstepLoop(bool isWalking, bool isPushing)
+        {
+            float pitch = 1.0f;
+            if (isWalking)
+                pitch = 0.7f;
+
+            if (!isFootstepLooping)
+            {
+                var group = SFXManager.Instance?.soundsSO.GetSoundGroup(SoundType.Footstep);
+                if (group != null && group.sounds.Length > 0)
+                {
+                    footstepSource.clip = group.sounds[Random.Range(0, group.sounds.Length)];
+                    footstepSource.volume = group.volume;
+                    footstepSource.loop = true;
+                    footstepSource.pitch = pitch;
+                    footstepSource.Play();
+                    isFootstepLooping = true;
+                }
+            }
+            else
+            {
+                // Adjust pitch if already looping
+                footstepSource.pitch = pitch;
+            }
+        }
+        void StopFootstepLoop()
+        {
+            if (isFootstepLooping)
+            {
+                footstepSource.Stop();
+                isFootstepLooping = false;
+            }
+        }
+        void StartPushLoop()
+        {
+            if (!isPushLooping)
+            {
+                var group = SFXManager.Instance?.soundsSO.GetSoundGroup(SoundType.CubePush);
+                if (group != null && group.sounds.Length > 0)
+                {
+                    pushSource.clip = group.sounds[Random.Range(0, group.sounds.Length)];
+                    pushSource.volume = group.volume;
+                    pushSource.loop = true;
+                    pushSource.Play();
+                    isPushLooping = true;
+                }
+            }
+        }
+        void StopPushLoop()
+        {
+            if (isPushLooping)
+            {
+                pushSource.Stop();
+                isPushLooping = false;
             }
         }
     }
@@ -148,6 +276,7 @@ public class PlayerController : MonoBehaviour
         attachedCube = cube;
         isPushingCube = true;
         activeChar.GetComponent<Animator>().Play("Push_Pose");
+        pushAttachTimer = pushAttachCooldown;
 
         // Find the closest side of the cube to the player
         Vector3[] directions = {
@@ -179,5 +308,11 @@ public class PlayerController : MonoBehaviour
 
         // Face the cube
         transform.rotation = Quaternion.LookRotation(bestDir);
+    }
+
+    public void AddEnergy(float amount)
+    {
+        currentEnergy = Mathf.Clamp(currentEnergy + amount, 0, maxEnergy);
+        if (energyBarUI) energyBarUI.SetEnergy(currentEnergy / maxEnergy);
     }
 }

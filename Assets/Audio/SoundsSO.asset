@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 728da7b6a1cd8554e81ea3e6c9a487f0, type: 3}
+  m_Name: SoundsSO
+  m_EditorClassIdentifier: 
+  soundLists:
+  - type: 2
+    sounds:
+    - {fileID: 8300000, guid: b4ce646836c9dd74786428da7fdba15b, type: 3}
+    volume: 0.8
+  - type: 4
+    sounds:
+    - {fileID: 8300000, guid: a40a23fbf798a0c4cb1efc2ad780f8a2, type: 3}
+    volume: 0.3
+  - type: 1
+    sounds:
+    - {fileID: 8300000, guid: a31d7734204e5014c9cb4b3531f3ffdb, type: 3}
+    volume: 0.8
+  - type: 5
+    sounds:
+    - {fileID: 8300000, guid: d4a7b0a5191a59b42b280935d147610d, type: 3}
+    volume: 0.6
+  - type: 3
+    sounds:
+    - {fileID: 8300000, guid: 26fd9d596ce357c43a8d91b68e6f88a0, type: 3}
+    volume: 0.3
+  - type: 6
+    sounds:
+    - {fileID: 8300000, guid: fb54b166498a675478c70601c0ea927b, type: 3}
+    volume: 0.6
+  - type: 7
+    sounds:
+    - {fileID: 8300000, guid: d0b75b9a45855ba4e86e55ff3d2bca7e, type: 3}
+    volume: 0.8
