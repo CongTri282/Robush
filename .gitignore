@@ -1,12 +1,42 @@
-# Unity .gitignore
-[Ll]ibrary/
-[Tt]emp/
-[Oo]bj/
-[Bb]uild/
-[Bb]uilds/
-[Ll]ogs/
-[Mm]emoryCaptures/
-UserSettings/
+
+# Unity generated folders
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/MemoryCaptures/
+/Recordings/
+
+# Unity generated files
+*.log
+*.pidb
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+sysinfo.txt
+mono_crash.*
+
+# Unity meta files for unwanted types
+*.blend1
+*.blend1.meta
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Asset Store tools (optional)
+/[Aa]ssets/AssetStoreTools*
+
+# JetBrains Rider
+/Assets/Plugins/Editor/JetBrains*
+*.DotSettings.user
+
+# Visual Studio
+.vs/
+.gradle/
 *.csproj
 *.unityproj
 *.sln
@@ -14,49 +44,38 @@ UserSettings/
 *.tmp
 *.user
 *.userprefs
-*.pidb
-*.booproj
-*.svd
-*.pdb
-*.mdb
-*.opendb
-*.VC.db
-sysinfo.txt
-*.pidb.meta
 
-# OS generated
-.DS_Store
-Thumbs.db
+# Consulo
+.consulo/
 
-# Visual Studio Code
-.vscode/
+# Exported objects
+ExportedObj/
 
-# Git LFS
-*.psd
-*.png
-*.jpg
-*.jpeg
-*.fbx
-*.wav
-*.mp3
-*.ogg
-*.mp4
-*.avi
-*.mov
-*.zip
-*.rar
-*.7z
-*.unity
-*.prefab
-*.mat
-
-# Builds
+# Build artifacts
 *.apk
 *.aab
-*.exe
+*.unitypackage
+*.unitypackage.meta
 *.app
-*.x86_64
-*.ipa
 
-# Unity Collaborate
-.collab/
+# Crashlytics
+crashlytics-build.properties
+
+# Test scenes
+InitTestScene*.unity*
+
+# Addressables
+/ServerData
+/Assets/StreamingAssets/aa*
+/Assets/AddressableAssetsData/link.xml*
+/Assets/Addressables_Temp*
+/Assets/AddressableAssetsData/*/*.bin*
+
+# Visual Scripting
+/Assets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db
+/Assets/Unity.VisualScripting.Generated/VisualScripting.Flow/UnitOptions.db.meta
+/Assets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers
+/Assets/Unity.VisualScripting.Generated/VisualScripting.Core/Property Providers.meta
+
+# Auto-generated scenes by play mode tests
+/Assets/InitTestScene*.unity*
