@@ -1,15 +1,8 @@
 fileFormatVersion: 2
-guid: f113ab3d815f55c48af359829946b403
+guid: ce7dcb54d94801e4aa5fbb435617ad75
 NativeFormatImporter:
   externalObjects: {}
-  mainObjectFileID: 2100000
+  mainObjectFileID: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 118783
-  packageName: Sci-Fi PBR Props
-  packageVersion: 2.0
-  assetPath: Assets/SciFiProps/Material/GlassTankMat.mat
-  uploadId: 306779

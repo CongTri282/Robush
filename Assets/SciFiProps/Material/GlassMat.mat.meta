@@ -1,15 +1,8 @@
 fileFormatVersion: 2
-guid: 5be32af07c7de814eb0f3dc7f2f66642
+guid: 7af8f78e15288c748880f24376346610
 NativeFormatImporter:
   externalObjects: {}
-  mainObjectFileID: 2100000
+  mainObjectFileID: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 118783
-  packageName: Sci-Fi PBR Props
-  packageVersion: 2.0
-  assetPath: Assets/SciFiProps/Material/GlassMat.mat
-  uploadId: 306779

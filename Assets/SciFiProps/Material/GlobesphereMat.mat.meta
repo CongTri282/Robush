@@ -1,15 +1,8 @@
 fileFormatVersion: 2
-guid: f2cfb95376051e24c9db0793f0bc8c5b
+guid: 74f16598d0fb1394282d1ebf92074eb4
 NativeFormatImporter:
   externalObjects: {}
-  mainObjectFileID: 2100000
+  mainObjectFileID: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 118783
-  packageName: Sci-Fi PBR Props
-  packageVersion: 2.0
-  assetPath: Assets/SciFiProps/Material/GlobesphereMat.mat
-  uploadId: 306779
