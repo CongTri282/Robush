@@ -8,4 +8,5 @@ public enum SoundType
     CubePush,
     ElevatorOpen,
     ChargeOn,
+    Switch,
 }

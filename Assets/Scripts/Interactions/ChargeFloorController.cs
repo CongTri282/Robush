@@ -7,6 +7,7 @@ public class ChargeFloorController : MonoBehaviour
     [SerializeField] private Color chargedColor = Color.green;
     [SerializeField] private Color defaultColor = Color.gray;
     [SerializeField] private GameObject elevator;
+    [SerializeField] private GameObject elevatorSwitch;
     private bool isCharged = false;
 
     void Start()
@@ -26,13 +27,20 @@ public class ChargeFloorController : MonoBehaviour
             SetFloorColor(chargedColor);
             SFXManager.Instance?.PlaySFX(SoundType.ChargeOn);
             SFXManager.Instance?.PlaySFX(SoundType.ElevatorOpen);
-            if (elevator != null)
-            {
-                var anim = elevator.GetComponent<Animator>();
-                if (anim != null)
-                    anim.Play("OpenElevator");
-            }
+            StartCoroutine(OpenElevatorAfterDelay());
         }
+    }
+
+    private System.Collections.IEnumerator OpenElevatorAfterDelay()
+    {
+        yield return new WaitForSeconds(2f); // Wait for sound to play
+        if (elevator != null)
+        {
+            var anim = elevator.GetComponent<Animator>();
+            if (anim != null)
+                anim.Play("OpenElevator");
+        }
+        elevatorSwitch.SetActive(true);
     }
 
     void OnTriggerExit(Collider other)
