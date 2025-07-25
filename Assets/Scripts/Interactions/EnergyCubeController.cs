@@ -23,6 +23,7 @@ public class EnergyCubeController : MonoBehaviour
             pushAction = gameplayMap.FindAction("Push", true);
             pushAction.Enable();
         }
+        infoUI = GameplayCanvasController.Instance?.infoUI;
     }
 
     void Update()

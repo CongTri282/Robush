@@ -30,10 +30,11 @@ public class SwitchLevelController : MonoBehaviour
             interactAction.Disable(); // Disable until cooldown is over
         }
 
+        infoUI = GameplayCanvasController.Instance?.infoUI;
+
         cooldownTimer = switchCooldown;
         allowSwitch = false;
     }
-
 
     void Update()
     {

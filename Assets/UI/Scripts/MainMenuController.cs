@@ -5,11 +5,16 @@ using UnityEngine.UI;
 public class MainMenuController : MonoBehaviour
 {
     [Header("UI Buttons")]
+    [SerializeField] private GameObject mainMenuPanel; // Optional pause menu panel
     [SerializeField] private Button playButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button aboutButton;
     [SerializeField] private Button bgmToggleButton;
+
+    [Header("Options Panel")]
+    [SerializeField] private GameObject optionsPanel; // Optional options panel
+    [SerializeField] private Button backButton; // Add this for OptionsPanel "Back"
 
     [Header("BGM Sprites")]
     [SerializeField] private Sprite bgmOnSprite;
@@ -27,6 +32,8 @@ public class MainMenuController : MonoBehaviour
             aboutButton.onClick.AddListener(OnAboutClicked);
         if (bgmToggleButton != null)
             bgmToggleButton.onClick.AddListener(OnBGMToggleClicked);
+        if (backButton != null)
+            backButton.onClick.AddListener(OnBackClicked);
 
         // Ensure BGM state matches saved preference
         bool isBGMOn = PlayerPrefs.GetInt("BGMEnabled", 1) != 0;
@@ -101,5 +108,15 @@ public class MainMenuController : MonoBehaviour
                 BGMManager.Instance.StopBGM();
             }
         }
+    }
+    private void OnBackClicked()
+    {
+        SFXManager.Instance?.PlaySFX(SoundType.ButtonClick);
+
+        if (optionsPanel != null)
+            optionsPanel.SetActive(false);
+
+        if (mainMenuPanel != null)
+            mainMenuPanel.SetActive(true);
     }
 }
