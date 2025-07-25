@@ -52,4 +52,10 @@ public class SFXManager : MonoBehaviour
             Debug.LogWarning($"SFXManager: SoundType '{type}' not found.");
         }
     }
+    public void SetMute(bool isMuted)
+    {
+        sfxAudioSource.mute = isMuted;
+        PlayerController.SetAllSFXMute(isMuted);
+    }
+
 }
