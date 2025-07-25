@@ -27,6 +27,41 @@ public class ThirdPersonCamera : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.onGameStateChanged += OnGameStateChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.onGameStateChanged -= OnGameStateChanged;
+    }
+
+    private void OnGameStateChanged(GameManager.GameState newState)
+    {
+        bool enableInput = (newState == GameManager.GameState.Playing);
+        if (lookAction != null)
+        {
+            if (enableInput)
+                lookAction.Enable();
+            else
+                lookAction.Disable();
+        }
+
+        if (enableInput)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+    }
+
     void LateUpdate()
     {
         Vector2 lookDelta = lookAction != null ? lookAction.ReadValue<Vector2>() : Vector2.zero;
