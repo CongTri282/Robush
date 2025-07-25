@@ -61,10 +61,15 @@ public class MainMenuController : MonoBehaviour
         Application.Quit();
     }
 
-    public void OnOptionsClicked()
+    private void OnOptionsClicked()
     {
         SFXManager.Instance?.PlaySFX(SoundType.ButtonClick);
-        // Show options UI or logic here
+
+        if (mainMenuPanel != null)
+            mainMenuPanel.SetActive(false);
+
+        if (optionsPanel != null)
+            optionsPanel.SetActive(true);
     }
     public void OnAboutClicked()
     {
