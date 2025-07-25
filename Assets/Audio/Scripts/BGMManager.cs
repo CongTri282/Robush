@@ -46,6 +46,12 @@ public class BGMManager : MonoBehaviour
         bgmSource.Play();
     }
 
+    public void SetMute(bool isMuted)
+    {
+        bgmSource.mute = isMuted;
+    }
+
+
     public void StopBGM()
     {
         bgmSource.Stop();
