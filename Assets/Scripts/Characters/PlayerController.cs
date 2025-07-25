@@ -54,8 +54,11 @@ public class PlayerController : MonoBehaviour
             pushAction.Enable();
             walkAction.Enable();
         }
-
+        
+        currentEnergy = maxEnergy;
         controller.minMoveDistance = 0.001f;
+
+        energyBarUI = GameplayCanvasController.Instance?.energyBarUI.GetComponent<EnergyBarUI>();
 
         // Setup looping SFX sources if not assigned
         if (!footstepSource)
@@ -314,5 +317,53 @@ public class PlayerController : MonoBehaviour
     {
         currentEnergy = Mathf.Clamp(currentEnergy + amount, 0, maxEnergy);
         if (energyBarUI) energyBarUI.SetEnergy(currentEnergy / maxEnergy);
+    }
+
+    private void OnEnable()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.onGameStateChanged += OnGameStateChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.onGameStateChanged -= OnGameStateChanged;
+    }
+
+    private void OnGameStateChanged(GameManager.GameState newState)
+    {
+        bool enableInput = (newState == GameManager.GameState.Playing);
+        SetMovementInputEnabled(enableInput);
+    }
+
+    private void SetMovementInputEnabled(bool enabled)
+    {
+        if (enabled)
+        {
+            moveAction?.Enable();
+            jumpAction?.Enable();
+            pushAction?.Enable();
+            walkAction?.Enable();
+        }
+        else
+        {
+            moveAction?.Disable();
+            jumpAction?.Disable();
+            pushAction?.Disable();
+            walkAction?.Disable();
+        }
+    }
+
+    public static void SetAllSFXMute(bool isMuted)
+    {
+        var player = FindFirstObjectByType<PlayerController>();
+        if (player != null)
+        {
+            if (player.footstepSource != null)
+                player.footstepSource.mute = isMuted;
+            if (player.pushSource != null)
+                player.pushSource.mute = isMuted;
+        }
     }
 }

@@ -7,8 +7,11 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    public enum GameState { MainMenu, Playing, Paused, ResumeGame }
+    public enum GameState { MainMenu, Playing, Paused }
     public GameState CurrentState { get; private set; } = GameState.MainMenu;
+
+    // Event for state changes
+    public System.Action<GameState> onGameStateChanged;
 
     private void Awake()
     {
@@ -26,43 +29,66 @@ public class GameManager : MonoBehaviour
     public void SetState(GameState newState)
     {
         if (CurrentState == newState) return;
+
+        var previousState = CurrentState;
         CurrentState = newState;
+
+        // Notify listeners
+        onGameStateChanged?.Invoke(CurrentState);
+
         switch (CurrentState)
         {
             case GameState.MainMenu:
-                // Show main menu UI
+                Time.timeScale = 1f;
                 break;
+
             case GameState.Playing:
-                // Hide menus, start/resume gameplay
-                // Load the main gameplay scene if not already loaded
-                if (SceneManager.GetActiveScene().name != "DevScene")
+                Time.timeScale = 1f;
+                if (previousState == GameState.Paused)
                 {
-                    StartCoroutine(FadeAndLoadScene("DevScene"));
+                    if (BGMManager.Instance != null)
+                    {
+                        BGMManager.Instance.ResumeBGM();
+                    }
                 }
-                // Play BGM track 1
+                else
+                {
+                    // Load the main gameplay scene if not already loaded
+                    if (SceneManager.GetActiveScene().name != "DevScene" && previousState == GameState.MainMenu)
+                    {
+                        StartCoroutine(FadeAndLoadScene("DevScene", 1));
+                    }
+                }
+                break;
+
+            case GameState.Paused:
+                Time.timeScale = 0f;
                 if (BGMManager.Instance != null)
                 {
-                    BGMManager.Instance.PlayBGM(1);
+                    BGMManager.Instance.PauseBGM();
                 }
                 break;
-            case GameState.ResumeGame:
-                // Resume game logic
-                break;
-            case GameState.Paused:
-                // Show pause UI, stop time
-                Time.timeScale = 0f;
-                break;
+        }
+    }
+
+    public void TogglePause()
+    {
+        if (CurrentState == GameState.Playing)
+        {
+            PauseGame();
+        }
+        else if (CurrentState == GameState.Paused)
+        {
+            ResumeGame();
         }
     }
 
     public void ResumeGame()
     {
-        // if (CurrentState == GameState.Paused)
-        // {
-        //     Time.timeScale = 1f;
-        //     // Resume gameplay
-        //     SetState(GameState.Playing, SceneManager.GetActiveScene().name, 1);
-        // }
+        if (CurrentState == GameState.Paused)
+        {
+            SetState(GameState.Playing);
+        }
     }
 
     public void PauseGame()
@@ -77,44 +103,48 @@ public class GameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         StartCoroutine(FadeAndLoadScene(SceneManager.GetActiveScene().name));
+        SetState(GameState.Playing);
     }
 
     public void StartGame()
     {
-        Time.timeScale = 1f;
         SetState(GameState.Playing);
     }
+
     public void LoadLevel(string levelName, int bgmTrack)
     {
         Time.timeScale = 1f;
-        StartCoroutine(FadeAndLoadScene(levelName));
-        if (BGMManager.Instance != null)
-        {
-            BGMManager.Instance.PlayBGM(bgmTrack);
-        }
+        StartCoroutine(FadeAndLoadScene(levelName, bgmTrack));
     }
 
     public void LoadMainMenu()
     {
+        Time.timeScale = 1f;
         StartCoroutine(FadeAndLoadScene("MainMenu"));
         SetState(GameState.MainMenu);
     }
+
     public void QuitGame()
     {
-        Application.Quit();
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
     }
 
-    private IEnumerator FadeAndLoadScene(string sceneName)
+    private IEnumerator FadeAndLoadScene(string sceneName, int bgmTrack = -1)
     {
         if (ScreenFader.Instance != null)
-        {
             yield return ScreenFader.Instance.FadeOut();
-        }
+
         SceneManager.LoadScene(sceneName);
-        yield return null; // Wait one frame for scene load
+        yield return null;
+
+        if (bgmTrack != -1 && BGMManager.Instance != null)
+            BGMManager.Instance.PlayBGM(bgmTrack);
+
         if (ScreenFader.Instance != null)
-        {
             yield return ScreenFader.Instance.FadeIn();
-        }
     }
 }
