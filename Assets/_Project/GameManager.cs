@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
+    [SerializeField] private string startingScene;
+
     public enum GameState { MainMenu, Playing, Paused }
     public GameState CurrentState { get; private set; } = GameState.MainMenu;
 
@@ -54,9 +56,9 @@ public class GameManager : MonoBehaviour
                 else
                 {
                     // Load the main gameplay scene if not already loaded
-                    if (SceneManager.GetActiveScene().name != "DevScene" && previousState == GameState.MainMenu)
+                    if (SceneManager.GetActiveScene().name != startingScene && previousState == GameState.MainMenu)
                     {
-                        StartCoroutine(FadeAndLoadScene("DevScene", 1));
+                        StartCoroutine(FadeAndLoadScene(startingScene, 1));
                     }
                 }
                 break;
