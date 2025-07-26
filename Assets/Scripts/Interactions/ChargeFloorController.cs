@@ -15,7 +15,7 @@ public class ChargeFloorController : MonoBehaviour
         if (floorRenderer == null)
             floorRenderer = GetComponent<Renderer>();
         SetFloorColor(defaultColor);
-        
+
     }
 
     void OnTriggerEnter(Collider other)
@@ -40,7 +40,10 @@ public class ChargeFloorController : MonoBehaviour
             if (anim != null)
                 anim.Play("OpenElevator");
         }
-        elevatorSwitch.SetActive(true);
+        if (elevatorSwitch != null)
+        {
+            elevatorSwitch.SetActive(true);
+        }
     }
 
     void OnTriggerExit(Collider other)
@@ -50,7 +53,7 @@ public class ChargeFloorController : MonoBehaviour
         {
             isCharged = false;
             SetFloorColor(defaultColor);
-            SFXManager.Instance?.PlaySFX(SoundType.ElevatorOpen); 
+            SFXManager.Instance?.PlaySFX(SoundType.ElevatorOpen);
             if (elevator != null)
             {
                 var anim = elevator.GetComponent<Animator>();

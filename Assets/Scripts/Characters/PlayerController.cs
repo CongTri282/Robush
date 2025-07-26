@@ -281,12 +281,12 @@ public class PlayerController : MonoBehaviour
         activeChar.GetComponent<Animator>().Play("Push_Pose");
         pushAttachTimer = pushAttachCooldown;
 
-        // Find the closest side of the cube to the player
+        // Get world directions for each face
         Vector3[] directions = {
-            cube.transform.forward,    // front
-            -cube.transform.forward,   // back
-            cube.transform.right,      // right
-            -cube.transform.right      // left
+            cube.transform.TransformDirection(Vector3.forward),    // front
+            cube.transform.TransformDirection(-Vector3.forward),   // back
+            cube.transform.TransformDirection(Vector3.right),      // right
+            cube.transform.TransformDirection(-Vector3.right)      // left
         };
 
         Vector3 playerToCube = (cube.transform.position - transform.position).normalized;

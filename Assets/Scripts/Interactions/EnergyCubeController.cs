@@ -43,9 +43,9 @@ public class EnergyCubeController : MonoBehaviour
         isPlayerNearby = dist < interactDistance && !isBeingPushed;
 
         // Check if player is on top of the cube
-        float cubeTopY = transform.position.y + GetComponent<Collider>().bounds.extents.y;
-        float playerFeetY = player.transform.position.y - player.controller.height / 2f + player.controller.radius;
-        bool playerOnTop = playerFeetY > cubeTopY - 0.1f;
+        Vector3 localPlayerPos = transform.InverseTransformPoint(player.transform.position);
+        bool playerOnTop = localPlayerPos.y > 0.4f; // 0.4–0.5 = slightly above center
+
 
         if (infoUI)
         {
